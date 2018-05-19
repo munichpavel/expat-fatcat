@@ -1,0 +1,1 @@
+conda remove -n expat_fatcat --all
