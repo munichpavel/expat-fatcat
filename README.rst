@@ -18,7 +18,7 @@ expat-fatcat
      :alt: Updates
 
 
-expat-fatcat helps US taxpayers living abroafile their tax returns
+expat-fatcat helps US taxpayers living abroad file their tax returns
 
 
 * Free software: MIT license
