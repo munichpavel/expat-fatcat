@@ -20,7 +20,7 @@ expat-fatcat
 
 expat-fatcat helps US taxpayers living abroad file their tax returns
 
-The notebook `notebook`_ shows the main features of `expat_fatcat` on sample income and housing payment data.
+This `notebook`_ shows the main features of `expat_fatcat` on sample income and housing payment data.
 
 * Free software: MIT license
 * Documentation: https://expat-fatcat.readthedocs.io.
@@ -36,7 +36,7 @@ Credits
 
 This package was created with Cookiecutter_ and the munichpavel_  fork_ of the `audreyr/cookiecutter-pypackage`_ project template.
 
-.. _notebook: notebook/fx.ipynb
+.. _notebook: notebooks/fx.ipynb
 .. _Cookiecutter: https://github.com/audreyr/cookiecutter
 .. _`audreyr/cookiecutter-pypackage`: https://github.com/audreyr/cookiecutter-pypackage
 .. _munichpavel: https://github.com/munichpavel
