@@ -79,3 +79,25 @@ def smooth_fx_rate(date_stamp, quandl_call_code):
                                          end_date=date_stamp + timedelta(days=7))
         
     return (fx_rate_before['Value'][-1] + fx_rate_after['Value'][0])/2
+
+
+##########################
+# Calculate specific lines of f2555
+##########################
+
+def f2555_line_19(income_path, date_col = 'Date', amount_col='Amount', 
+                       currency='EUR', source='ECB', pd_parse_args={}, date_str_format='%Y-%m-%d'):
+    '''Foreign income'''
+    income_df = convert_payments(income_path, date_col, amount_col, 
+                                        currency, source, pd_parse_args, date_str_format)
+    
+    return income_df['amount_usd'].sum()
+
+
+def f2555_line_34(rent_path, date_col = 'Date', amount_col='Amount', 
+                       currency='EUR', source='ECB', pd_parse_args={}, date_str_format='%Y-%m-%d'):
+    '''Housing deduction'''
+    rent_df = fatcat.convert_payments(rent_path, date_col, amount_col, 
+                                        currency, source, pd_parse_args, date_str_format)
+    
+    return rent_df['amount_usd'].sum()
