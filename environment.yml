@@ -2,7 +2,7 @@ name: expat_fatcat
 dependencies:
 - python=3.6
 - jupyter
-- python
+- pytest
 - quandl
 - pandas
 - xlrd
