@@ -7,7 +7,7 @@ expat-fatcat
         :target: https://pypi.python.org/pypi/expat_fatcat
 
 .. image:: https://img.shields.io/travis/munichpavel/expat_fatcat.svg
-        :target: https://travis-ci.org/munichpavel/expat_fatcat
+        :target: https://travis-ci.org/munichpavel/expat-fatcat
 
 .. image:: https://readthedocs.org/projects/expat-fatcat/badge/?version=latest
         :target: https://expat-fatcat.readthedocs.io/en/latest/?badge=latest
