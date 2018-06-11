@@ -18,7 +18,13 @@ eur_quandl_calls = {
     'BOE': 'BOE/XUDLSER'
     }
 
-quandl_calls = {'EUR': eur_quandl_calls}
+gbp_quandl_calls = {
+     'FRED': 'FRED/DEXUSUK',
+     'BOE': 'BOE/XUDLUSS'
+}
+
+quandl_calls = {'EUR': eur_quandl_calls,
+               'GBP': gbp_quandl_calls}
 
 
 def convert_payments(payment_path, date_col = 'Date', amount_col='Amount', 
