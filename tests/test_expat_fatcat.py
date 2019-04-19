@@ -10,7 +10,7 @@ import expat_fatcat
     
 @pytest.fixture
 def converter_eur():
-    return expat_fatcat.FatcatConverter('EUR', 'ECB/EURUSD')
+    return expat_fatcat.FatcatConverter('EUR')
 
 def test_date_conversion(converter_eur):
     assert converter_eur._parse_date('2019-04-19') == datetime(2019, 4, 19)
