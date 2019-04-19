@@ -1,3 +1,0 @@
-conda env create
-source activate expat_fatcat
-pip install -e .

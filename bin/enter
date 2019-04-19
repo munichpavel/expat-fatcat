@@ -1,2 +1,0 @@
-source activate expat_fatcat
-export DATA_DIR=$DATA_ROOT/expat_fatcat
