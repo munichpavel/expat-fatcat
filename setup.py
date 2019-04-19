@@ -11,11 +11,12 @@ setup(
     author_email='munichpavel@gmail.com',
     url='https://github.com/munichpavel/expat_fatcat',
     packages=find_packages('src'),
+    package_dir={'': 'src'},
     include_package_data=True,
-    install_requires=requirements,
+    install_requires=[],
     license="MIT license",
     zip_safe=False,
     keywords='expat_fatcat',
-    tests_require=['pytest']
+    tests_require=['pytest'],
     setup_requires=['pytest-runner'],
 )
