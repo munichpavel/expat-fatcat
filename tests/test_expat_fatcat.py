@@ -1,8 +1,20 @@
 """Tests for `expat_fatcat` package."""
 
 import pytest
+from datetime import datetime
+
 import expat_fatcat
 
-def test_get_rate():
-    rate = expat_fatcat.get_rate2usd('GBP', '2019-04-19')
+
+
+    
+@pytest.fixture
+def converter_eur():
+    return expat_fatcat.FatcatConverter('EUR')
+
+def test_date_conversion(converter_eur):
+    assert converter_eur._parse_date('2019-04-19') == datetime(2019, 4, 19)
+    
+def test_get_rate(converter_eur):
+    rate = converter_eur._get_rate2usd('2019-04-19')
     assert rate == 1.12
