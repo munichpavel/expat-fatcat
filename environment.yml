@@ -1,5 +1,6 @@
 name: expat_fatcat
 dependencies:
+- pip
 - python=3.6
 - jupyter
 - pytest
