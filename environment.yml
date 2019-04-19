@@ -6,6 +6,5 @@ dependencies:
 - quandl
 - pandas
 - xlrd
-- pyyaml>=4.2b1
 - pip:
   - "--editable=."
