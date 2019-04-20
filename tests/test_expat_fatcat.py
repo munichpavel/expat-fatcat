@@ -4,36 +4,44 @@ import pytest
 from datetime import datetime
 
 import expat_fatcat
+from expat_fatcat.expat_fatcat import AbsRateConverter
 
 @pytest.fixture
 def dummy_rate_converter():
-    class DummyConverter(expat_fatcat.RateConverter):
+    class DummyRateConverter(AbsRateConverter):
 
-        def __init__(self, currency):
-            pass
+        def __init__(self, to_currency):
+            self.to_currency = to_currency
 
-        def _set_call(self):
-            if self.currency == 'FOO':
-                self.call_str = 'FOO/BAR'
+
+        def _get_call_str(self, from_currency):
+            if from_currency == 'FOO':
+                return 'ECB/FOO' + self.to_currency
             else:
-                raise NotImplementedError('Only FOO to USD rates are implemented')
+                raise NotImplementedError('Only FOO to {} rates are implemented'.format(self.to_currency))
+        
 
-
-        def get_rate(self, date, target_currency, original_currency):
-            '''Returns dummy exchange rate'''
-
+        def _dummy_api_call(self, call_str):
             return 1.125
-    return DummyConverter
+
+
+        def get_rate(self, from_currency, date):
+            '''Returns dummy exchange rate'''
+            call_str = self._get_call_str(from_currency)
+            return self._dummy_api_call(call_str)
+        
+    return DummyRateConverter
 
 
 @pytest.fixture
-def converter_foo(dummy_rate_converter):
-    return expat_fatcat.FatcatConverter('FOO', dummy_rate_converter)
+def calculator_foo(dummy_rate_converter):
+    return expat_fatcat.FatcatCalculator(dummy_rate_converter)
 
-def test_date_conversion(converter_foo):
-    assert converter_foo._parse_date('2019-04-18') == datetime(2019, 4, 18)
+
+def test_date_conversion(calculator_foo):
+    assert calculator_foo._parse_date('2019-04-18') == datetime(2019, 4, 18)
     
 
-def test_get_rate(converter_foo):
-    rate = converter_foo._get_rate2usd('2019-04-18')
+def test_get_rate(calculator_foo):
+    rate = calculator_foo._get_rate('FOO', '2019-04-18')
     assert rate == 1.125
