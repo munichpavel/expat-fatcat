@@ -4,7 +4,7 @@ import pytest
 from datetime import datetime
 
 import expat_fatcat
-from expat_fatcat.expat_fatcat import AbsRateConverter, DummyRateConverter
+from expat_fatcat.expat_fatcat import DummyRateConverter
 
 @pytest.fixture
 def dummy_rate_converter():
