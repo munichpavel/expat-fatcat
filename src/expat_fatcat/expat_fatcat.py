@@ -8,7 +8,7 @@ import quandl
     
     
 class FatcatCalculator():
-    
+    '''Calculate fx rates and other tax related quantities for FATCA compliance'''
     def __init__(self, fx_rate_converter):
         self.fx_rate_converter = fx_rate_converter
         self._check_converter()
@@ -41,30 +41,30 @@ class AbsRateConverter(ABC):
 
 
 class DummyRateConverter(AbsRateConverter):
-
-        def __init__(self, to_currency):
-            self.to_currency = to_currency
-
-
-        def _get_call_str(self, from_currency):
-            if from_currency == 'FOO':
-                return 'ECB/FOO' + self.to_currency
-            else:
-                raise NotImplementedError('Only FOO to {} rates are implemented'.format(self.to_currency))
-        
-
-        def _dummy_api_call(self, call_str):
-            return 1.125
+    '''Dummy fx rate converter for testing and development'''
+    def __init__(self, to_currency):
+        self.to_currency = to_currency
 
 
-        def get_rate(self, from_currency, date):
-            '''Returns dummy exchange rate'''
-            call_str = self._get_call_str(from_currency)
-            return self._dummy_api_call(call_str)
-        
+    def _get_call_str(self, from_currency):
+        if from_currency == 'FOO':
+            return 'ECB/FOO' + self.to_currency
+        else:
+            raise NotImplementedError('Only FOO to {} rates are implemented'.format(self.to_currency))
+
+
+    def _dummy_api_call(self, call_str):
+        return 1.125
+
+
+    def get_rate(self, from_currency, date):
+        '''Returns dummy exchange rate'''
+        call_str = self._get_call_str(from_currency)
+        return self._dummy_api_call(call_str)
+
 
 class QuandlUSDRateConverter(AbsRateConverter):
-
+    '''Get conversion rates to USD from the QUANDL python api'''
     def __init__(self):
         self.to_currency = 'USD'
         self._set_key()
