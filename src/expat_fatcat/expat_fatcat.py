@@ -9,8 +9,10 @@ import quandl
     
 class FatcatCalculator():
     '''Calculate fx rates and other tax related quantities for FATCA compliance'''
-    def __init__(self, fx_rate_converter):
+    def __init__(self, fx_rate_converter, from_currency, payments):
         self.fx_rate_converter = fx_rate_converter
+        self.from_currency = from_currency
+        self.payments = payments
         self._check_converter()
         
     def _check_converter(self):
@@ -20,10 +22,24 @@ class FatcatCalculator():
     def _parse_date(self, date_string, date_format='%Y-%m-%d'):
         return datetime.strptime(date_string, date_format)
     
-    def get_rate(self, from_currency, date_string, date_format='%Y-%m-%d'):
+    def _get_rate(self, date_string, date_format='%Y-%m-%d'):
         date = self._parse_date(date_string, date_format)
-        rate = self.fx_rate_converter.get_rate(from_currency, date)
+        rate = self.fx_rate_converter.get_rate(self.from_currency, date)
         return rate
+    
+    
+    def _get_converted_amount(self, amount, date_string, date_format='%Y-%m-%d'):
+        return self._get_rate(date_string, date_format) * amount
+    
+    def __call__(self):
+
+        converted_payments = [
+            self._get_converted_amount(payment.get('amount'), payment.get('date'))
+            for payment in self.payments
+        ]
+        
+        return sum(converted_payments)
+            
 
 
     
@@ -53,14 +69,15 @@ class DummyRateConverter(AbsRateConverter):
             raise NotImplementedError('Only FOO to {} rates are implemented'.format(self.to_currency))
 
 
-    def _dummy_api_call(self, call_str):
+    def _dummy_api_call(self, call_str, date):
+        '''Returns dummy value for all argument values'''
         return 1.125
 
 
     def get_rate(self, from_currency, date):
         '''Returns dummy exchange rate'''
         call_str = self._get_call_str(from_currency)
-        return self._dummy_api_call(call_str)
+        return self._dummy_api_call(call_str, date)
 
 
 class QuandlUSDRateConverter(AbsRateConverter):

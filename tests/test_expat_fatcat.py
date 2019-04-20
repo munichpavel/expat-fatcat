@@ -10,10 +10,13 @@ from expat_fatcat.expat_fatcat import DummyRateConverter
 def dummy_rate_converter():
     return DummyRateConverter('USD')
 
-
 @pytest.fixture
 def dummy_calculator(dummy_rate_converter):
-    return expat_fatcat.FatcatCalculator(dummy_rate_converter)
+    payments = [
+        {'amount': 10., 'date': '2019-03-15'},
+        {'amount': 5., 'date': '2019-04-15'}
+    ]
+    return expat_fatcat.FatcatCalculator(dummy_rate_converter, 'FOO', payments)
 
 
 def test_date_conversion(dummy_calculator):
@@ -21,5 +24,15 @@ def test_date_conversion(dummy_calculator):
     
 
 def test_get_rate(dummy_calculator):
-    rate = dummy_calculator.get_rate('FOO', '2019-04-18')
+    rate = dummy_calculator._get_rate('2019-04-18')
     assert rate == 1.125
+    
+
+def test_get_converted_amount(dummy_calculator):
+    amount = 10.
+    assert dummy_calculator._get_converted_amount(amount, '2019-04-18') == 11.25
+
+    
+def test_calculate_agg_payment(dummy_calculator):
+    agg_payment = dummy_calculator()
+    assert agg_payment == 16.875
