@@ -4,4 +4,4 @@ __author__ = """Paul Larsen"""
 __email__ = 'munichpavel@gmail.com'
 __version__ = '0.1.0'
 
-from .expat_fatcat import FatcatCalculator, QuandlUSDRateConverter
+from .expat_fatcat import FatcatCalculator, QuandlUSDRateConverterTo

@@ -9,10 +9,8 @@ import quandl
     
 class FatcatCalculator():
     '''Calculate fx rates and other tax related quantities for FATCA compliance'''
-    def __init__(self, fx_rate_converter, from_currency):
+    def __init__(self, fx_rate_converter):
         self.fx_rate_converter = fx_rate_converter
-        self.from_currency = from_currency
-        #self.payments = payments
         self._check_converter()
         
     def _check_converter(self):
@@ -22,19 +20,19 @@ class FatcatCalculator():
     def _parse_date(self, date_string, date_format='%Y-%m-%d'):
         return datetime.strptime(date_string, date_format)
     
-    def _get_rate(self, date_string, date_format='%Y-%m-%d'):
+    def _get_rate(self, from_currency, date_string, date_format='%Y-%m-%d'):
         date = self._parse_date(date_string, date_format)
-        rate = self.fx_rate_converter.get_rate(self.from_currency, date)
+        rate = self.fx_rate_converter.get_rate(from_currency, date)
         return rate
     
     
-    def _get_converted_amount(self, amount, date_string, date_format='%Y-%m-%d'):
-        return self._get_rate(date_string, date_format) * amount
+    def _get_converted_amount(self, from_currency, amount, date_string, date_format='%Y-%m-%d'):
+        return self._get_rate(from_currency, date_string, date_format) * amount
     
-    def __call__(self, payments):
+    def __call__(self, from_currency, payments):
 
         converted_payments = [
-            self._get_converted_amount(payment.get('amount'), payment.get('date'))
+            self._get_converted_amount(from_currency, payment.get('amount'), payment.get('date'))
             for payment in payments
         ]
         
@@ -44,8 +42,8 @@ class FatcatCalculator():
 
     
 
-class AbsRateConverter(ABC):
-    '''Abstract class for currency conversions'''
+class AbsRateConverterTo(ABC):
+    '''Abstract class for conversions to a given currency'''
     def __init__(self, to_currency):
         self.to_currency = to_currency
     
@@ -56,17 +54,18 @@ class AbsRateConverter(ABC):
         pass
 
 
-class DummyRateConverter(AbsRateConverter):
+class DummyRateConverterTo(AbsRateConverterTo):
     '''Dummy fx rate converter for testing and development'''
     def __init__(self, to_currency):
         self.to_currency = to_currency
 
-
     def _get_call_str(self, from_currency):
         if from_currency == 'FOO':
             return 'ECB/FOO' + self.to_currency
+        elif from_currency == 'BAR':
+            return 'ECB/BAR' + self.to_currency
         else:
-            raise NotImplementedError('Only FOO to {} rates are implemented'.format(self.to_currency))
+            raise NotImplementedError('Only FOO or BAR to {} rates are implemented'.format(self.to_currency))
 
 
     def _dummy_api_call(self, call_str, date):
@@ -80,7 +79,7 @@ class DummyRateConverter(AbsRateConverter):
         return self._dummy_api_call(call_str, date)
 
 
-class QuandlUSDRateConverter(AbsRateConverter):
+class QuandlUSDRateConverterTo(AbsRateConverterTo):
     '''Get conversion rates to USD from the QUANDL python api'''
     def __init__(self):
         self.to_currency = 'USD'
