@@ -9,10 +9,10 @@ import quandl
     
 class FatcatCalculator():
     '''Calculate fx rates and other tax related quantities for FATCA compliance'''
-    def __init__(self, fx_rate_converter, from_currency, payments):
+    def __init__(self, fx_rate_converter, from_currency):
         self.fx_rate_converter = fx_rate_converter
         self.from_currency = from_currency
-        self.payments = payments
+        #self.payments = payments
         self._check_converter()
         
     def _check_converter(self):
@@ -31,11 +31,11 @@ class FatcatCalculator():
     def _get_converted_amount(self, amount, date_string, date_format='%Y-%m-%d'):
         return self._get_rate(date_string, date_format) * amount
     
-    def __call__(self):
+    def __call__(self, payments):
 
         converted_payments = [
             self._get_converted_amount(payment.get('amount'), payment.get('date'))
-            for payment in self.payments
+            for payment in payments
         ]
         
         return sum(converted_payments)
