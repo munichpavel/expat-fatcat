@@ -46,3 +46,36 @@ class TestCalculatorBasics:
         assert agg_payment == 2812.5
         
 
+@pytest.fixture
+def rent():
+    return [
+         {'date': '2017-01-20', 'amount': 650},
+         {'date': '2017-02-20', 'amount': 650},
+     ]
+
+@pytest.fixture
+def dividends():
+    return [
+         {'date': '2017-01-01', 'amount': 10},
+         {'date': '2017-02-01', 'amount': 50},
+    ]
+
+@pytest.fixture
+def f2555_data(salary, rent, dividends):
+        return [
+            {'tag': 'rent', 'currency': 'FOO', 'payments': rent},
+             {'tag': 'salary', 'currency': 'FOO', 'payments': salary},
+             {'tag': 'dividends', 'currency': 'BAR', 'payments': dividends},
+        ]
+            
+class TestF2555:
+    '''Tests for form 2555 class F2555'''
+    def test_f2555_call(self, rate_converter, f2555_data):
+
+        res = expat_fatcat.f2555(rate_converter, f2555_data)
+        assert res.get('rent').get('amount') == 1462.5
+        assert res.get('rent').get('currency') == 'FOO'
+        assert res.get('salary').get('amount') == 2812.5
+        assert res.get('salary').get('currency') == 'FOO'
+        assert res.get('dividends').get('amount') == 67.5
+        assert res.get('dividends').get('currency') == 'BAR'

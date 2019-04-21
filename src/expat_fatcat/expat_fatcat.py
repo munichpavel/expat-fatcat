@@ -5,16 +5,49 @@ from datetime import datetime
 from abc import ABC, abstractmethod
 
 import quandl
+
+
+def f2555(rate_converter, data):
+    '''
+    Calculate total payments in USD
     
-    
+    Example usage
+    -------------
+    >>> converter = DummyRateConverterTo('USD')
+    >>> data = [
+    ...     {'tag': 'salary', 'currency': 'FOO', 
+    ...      'payments':  [
+    ...          {'date': '2017-01-20', 'amount': 1000},
+    ...          {'date': '2017-02-20', 'amount': 1500}
+    ...      ]},
+    ...     {'tag': 'dividends', 'currency': 'BAR', 
+    ...      'payments': [
+    ...          {'date': '2017-01-01', 'amount': 10},
+    ...          {'date': '2017-02-01', 'amount': 50}
+    ...      ]}
+    ... ]
+    >>> f2555(converter, data)
+    {'salary': {'currency': 'FOO', 'amount': 2812.5}, 'dividends': {'currency': 'BAR', 'amount': 67.5}}
+    '''
+    calculator = FatcatCalculator(rate_converter)
+    res = {}
+    for d in data:
+         res[d['tag']] = {
+            'currency': d['currency'],
+            'amount': calculator(d['currency'], d['payments'])
+        }
+
+    return res
+
+
 class FatcatCalculator():
     '''Calculate fx rates and other tax related quantities for FATCA compliance'''
-    def __init__(self, fx_rate_converter):
-        self.fx_rate_converter = fx_rate_converter
+    def __init__(self, rate_converter):
+        self.rate_converter = rate_converter
         self._check_converter()
         
     def _check_converter(self):
-        if self.fx_rate_converter.to_currency != 'USD':
+        if self.rate_converter.to_currency != 'USD':
             raise ValueError('invalid "to_currency": Fatcat only converts to USD')
         
     def _parse_date(self, date_string, date_format='%Y-%m-%d'):
@@ -22,7 +55,7 @@ class FatcatCalculator():
     
     def _get_rate(self, from_currency, date_string, date_format='%Y-%m-%d'):
         date = self._parse_date(date_string, date_format)
-        rate = self.fx_rate_converter.get_rate(from_currency, date)
+        rate = self.rate_converter.get_rate(from_currency, date)
         return rate
     
     
@@ -37,9 +70,6 @@ class FatcatCalculator():
         ]
         
         return sum(converted_payments)
-            
-
-
     
 
 class AbsRateConverterTo(ABC):
