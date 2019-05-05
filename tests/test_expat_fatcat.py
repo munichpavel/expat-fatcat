@@ -3,6 +3,7 @@
 import pytest
 from contextlib import contextmanager
 
+import numpy as np
 from datetime import datetime
 
 import expat_fatcat
@@ -11,16 +12,16 @@ from expat_fatcat.expat_fatcat import DummyRateConverterTo
 
 rates_asym = [
     (datetime(2017, 2, 19), 2.2),
-    (datetime(2017, 2, 20), None),
-    (datetime(2017, 2, 21), None),
+    (datetime(2017, 2, 20), np.nan),
+    (datetime(2017, 2, 21), np.nan),
 ]
 expected_asym = 2.2
 
 rates_sym = [
     (datetime(2017, 2, 18), 2.9),
-    (datetime(2017, 2, 19), None),
-    (datetime(2017, 2, 20), None),
-    (datetime(2017, 2, 21), None),
+    (datetime(2017, 2, 19), np.nan),
+    (datetime(2017, 2, 20), np.nan),
+    (datetime(2017, 2, 21), np.nan),
     (datetime(2017, 2, 22), 3.1),
 ]
 expected_sym = 3.0
@@ -29,21 +30,28 @@ expected_sym = 3.0
 def does_not_raise():
     yield
 
+def nan_test_equals(x,y):
+    if np.isnan(x) and np.isnan(y):
+        return True
+    else:
+        return x == y
+
+
 @pytest.mark.parametrize(
     'converter_input,rates_expected,from_currency,\
         date_input,error_expectation,lookup_rate_expected,rate_expected',
     [
         (
-            DummyRateConverterTo('USD'), None, 
-            'FOO', None, pytest.raises(TypeError), None, 1.125
+            DummyRateConverterTo('USD'), None, 'FOO',  
+            datetime(2017, 2, 20), pytest.raises(TypeError), np.nan, 1.125
         ),
         (
-            DummyRateConverterTo('USD', rates_asym), rates_asym, 
-            'FOO', datetime(2017, 2, 20), does_not_raise(), None, 2.2
+            DummyRateConverterTo('USD', rates_asym), rates_asym, 'FOO', 
+            datetime(2017, 2, 20), does_not_raise(), np.nan, 2.2
         ),
         (
-            DummyRateConverterTo('USD', rates_sym), rates_sym,
-            'FOO', datetime(2017, 2, 20), does_not_raise(), None, 2.0
+            DummyRateConverterTo('USD', rates_sym), rates_sym, 'FOO', 
+            datetime(2017, 2, 20), does_not_raise(), np.nan, 3.0
         )
     ]
 )
@@ -54,10 +62,10 @@ class TestConverter:
         from_currency, date_input, error_expectation,lookup_rate_expected, rate_expected
     ):
         assert converter_input._dates_rates == rates_expected
-    #    assert converter_input.get_rate(from_currency, date_input) == rate_expected
         with error_expectation:
-            assert converter_input._lookup_rate(date_input) == lookup_rate_expected
-    
+            assert nan_test_equals(converter_input._lookup_rate(date_input), lookup_rate_expected)
+        assert converter_input.get_rate(from_currency, date_input) == rate_expected
+
 
 # @pytest.mark.parametrize(
 #     'test_rate_input,expected',

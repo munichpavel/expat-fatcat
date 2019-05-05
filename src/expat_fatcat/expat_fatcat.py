@@ -1,6 +1,8 @@
 """Main module."""
 import os
-from datetime import datetime
+import numpy as np
+
+from datetime import datetime, timedelta
 
 from abc import ABC, abstractmethod
 
@@ -91,10 +93,20 @@ class DummyRateConverterTo(AbsRateConverterTo):
         self._dates_rates = dates_rates
 
 
-    def get_rate(self, from_currency, date):
+    def get_rate(self, from_currency, date, offset=0):
         '''Returns dummy exchange rate'''
         call_str = self._get_call_str(from_currency)
-        return self._dummy_api_call(call_str, date)
+        res = np.nanmean([
+            self._dummy_api_call(call_str, date + timedelta(offset)),
+            self._dummy_api_call(call_str, date + timedelta(-offset))
+        ])
+        
+        if not np.isnan(res):
+            return res
+        else:
+            offset += 1
+            return self.get_rate(from_currency, date, offset)
+            
 
 
     def _get_call_str(self, from_currency):
