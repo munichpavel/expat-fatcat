@@ -10,14 +10,14 @@ import expat_fatcat
 from expat_fatcat.expat_fatcat import DummyRateConverterTo
 
 
-rates_asym = [
+dates_rates_asym = [
     (datetime(2017, 2, 19), 2.2),
     (datetime(2017, 2, 20), np.nan),
     (datetime(2017, 2, 21), np.nan),
 ]
 expected_asym = 2.2
 
-rates_sym = [
+dates_rates_sym = [
     (datetime(2017, 2, 18), 2.9),
     (datetime(2017, 2, 19), np.nan),
     (datetime(2017, 2, 20), np.nan),
@@ -46,11 +46,11 @@ def nan_test_equals(x,y):
             datetime(2017, 2, 20), pytest.raises(TypeError), np.nan, 1.125
         ),
         (
-            DummyRateConverterTo('USD', rates_asym), rates_asym, 'FOO', 
+            DummyRateConverterTo('USD', dates_rates_asym), dates_rates_asym, 'FOO', 
             datetime(2017, 2, 20), does_not_raise(), np.nan, expected_asym
         ),
         (
-            DummyRateConverterTo('USD', rates_sym), rates_sym, 'FOO', 
+            DummyRateConverterTo('USD', dates_rates_sym), dates_rates_sym, 'FOO', 
             datetime(2017, 2, 20), does_not_raise(), np.nan, expected_sym
         )
     ]
