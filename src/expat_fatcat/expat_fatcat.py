@@ -165,5 +165,11 @@ class QuandlUSDRateConverterTo(AbsRateConverterTo):
     #     return res.iloc[0]['Value']
 
     def _rate_api_call(self, call_str, date):
-        res = quandl.get(call_str, start_date=date, end_date=date)
-        return res.iloc[0]['Value']
+        r = quandl.get(call_str, start_date=date, end_date=date)
+        try:
+            res = r.iloc[0]['Value']
+        except IndexError as err:
+            print("Invalid date, trying before and after")
+            res = np.nan
+
+        return res

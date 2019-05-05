@@ -10,3 +10,4 @@ allow rate smoothing initial window size initialization
 ~~Add parametrized calculator tests~~ WON'T IMPLEMENT
 
 ~~Move dummy converter smoothing rate to abstract converter~~
+Add invalid date test
