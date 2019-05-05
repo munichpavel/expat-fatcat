@@ -1,6 +1,8 @@
 """Tests for `expat_fatcat` package."""
 
 import pytest
+from contextlib import contextmanager
+
 from datetime import datetime
 
 import expat_fatcat
@@ -23,19 +25,39 @@ rates_sym = [
 ]
 expected_sym = 3.0
 
+@contextmanager
+def does_not_raise():
+    yield
+
 @pytest.mark.parametrize(
-    'test_input,expected',
+    'converter_input,rates_expected,from_currency,\
+        date_input,error_expectation,lookup_rate_expected,rate_expected',
     [
-        (DummyRateConverterTo('USD'), [(None, 1.125)]),
-        (DummyRateConverterTo('USD', rates_asym), rates_asym),
-        (DummyRateConverterTo('USD', rates_sym), rates_sym)
+        (
+            DummyRateConverterTo('USD'), None, 
+            'FOO', None, pytest.raises(TypeError), None, 1.125
+        ),
+        (
+            DummyRateConverterTo('USD', rates_asym), rates_asym, 
+            'FOO', datetime(2017, 2, 20), does_not_raise(), None, 2.2
+        ),
+        (
+            DummyRateConverterTo('USD', rates_sym), rates_sym,
+            'FOO', datetime(2017, 2, 20), does_not_raise(), None, 2.0
+        )
     ]
 )
 class TestConverter:
 
-    def test_rates_init(self, test_input, expected):
-        assert test_input._dates_rates == expected
- 
+    def test_rates_init(
+        self, converter_input, rates_expected,
+        from_currency, date_input, error_expectation,lookup_rate_expected, rate_expected
+    ):
+        assert converter_input._dates_rates == rates_expected
+    #    assert converter_input.get_rate(from_currency, date_input) == rate_expected
+        with error_expectation:
+            assert converter_input._lookup_rate(date_input) == lookup_rate_expected
+    
 
 # @pytest.mark.parametrize(
 #     'test_rate_input,expected',

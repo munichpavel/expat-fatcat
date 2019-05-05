@@ -88,14 +88,13 @@ class DummyRateConverterTo(AbsRateConverterTo):
     '''Dummy fx rate converter for testing and development'''
     def __init__(self, to_currency, dates_rates=None):
         self.to_currency = to_currency
-        self._set_dates_rates(dates_rates)
-        
-        
-    def _set_dates_rates(self, dates_rates):
-        if dates_rates is None:
-            self._dates_rates = [(None, 1.125)]
-        else:
-            self._dates_rates = dates_rates
+        self._dates_rates = dates_rates
+
+
+    def get_rate(self, from_currency, date):
+        '''Returns dummy exchange rate'''
+        call_str = self._get_call_str(from_currency)
+        return self._dummy_api_call(call_str, date)
 
 
     def _get_call_str(self, from_currency):
@@ -109,13 +108,18 @@ class DummyRateConverterTo(AbsRateConverterTo):
 
     def _dummy_api_call(self, call_str, date):
         '''Returns dummy value for all argument values'''
-        return 1.125
+        if self._dates_rates is None:
+            return 1.125
+        else:
+            return self._lookup_rate(date)
+            
 
+    def _lookup_rate(self, date):
+        for r in self._dates_rates:
+            if r[0] == date:
+                return r[1]
 
-    def get_rate(self, from_currency, date):
-        '''Returns dummy exchange rate'''
-        call_str = self._get_call_str(from_currency)
-        return self._dummy_api_call(call_str, date)
+    
 
 
 class QuandlUSDRateConverterTo(AbsRateConverterTo):
