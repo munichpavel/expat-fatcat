@@ -6,4 +6,5 @@ allow rate smoothing initial window size initialization
 ~~Add test for dummy lookup rate expected~~
 ~~Refactor value error assertion, no return~~
 ~~implement obvious lookup rate expected~~
-restore calculator tests
+~~restore calculator tests~~
+Add parametrized calculator tests
