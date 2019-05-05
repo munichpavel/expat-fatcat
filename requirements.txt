@@ -1,11 +1,7 @@
-name: expat_fatcat
-dependencies:
-- pip
-- python=3.6
-- jupyter
-- pytest
-- quandl
-- pandas
-- xlrd
-- pip:
-  - "--editable=."
+jupyter
+numpy
+pandas
+pytest
+quandl
+xlrd
+-e .
