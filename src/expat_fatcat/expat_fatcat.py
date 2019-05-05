@@ -81,9 +81,30 @@ class AbsRateConverterTo(ABC):
         self.to_currency = to_currency
     
 
+    def get_rate(self, from_currency, date, offset=0):
+        '''Returns exchange rate'''
+        call_str = self._get_call_str(from_currency)
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore", category=RuntimeWarning)
+            res = np.nanmean([
+                self._rate_api_call(call_str, date + timedelta(offset)),
+                self._rate_api_call(call_str, date + timedelta(-offset))
+            ])
+            
+        if not np.isnan(res):
+            return res
+        else:
+            offset += 1
+            return self.get_rate(from_currency, date, offset)
+
+
     @abstractmethod
-    def get_rate(self, from_currency, date):
-        '''Returns exchange rate as a float'''
+    def _get_call_str(self, from_currency):
+        pass
+
+
+    @abstractmethod
+    def _rate_api_call(self, call_str, date):
         pass
 
 
@@ -92,24 +113,6 @@ class DummyRateConverterTo(AbsRateConverterTo):
     def __init__(self, to_currency, dates_rates=(None, 1.125)):
         self.to_currency = to_currency
         self._dates_rates = dates_rates
-
-
-    def get_rate(self, from_currency, date, offset=0):
-        '''Returns dummy exchange rate'''
-        call_str = self._get_call_str(from_currency)
-        with warnings.catch_warnings():
-            warnings.simplefilter("ignore", category=RuntimeWarning)
-            res = np.nanmean([
-                self._dummy_api_call(call_str, date + timedelta(offset)),
-                self._dummy_api_call(call_str, date + timedelta(-offset))
-            ])
-            
-        if not np.isnan(res):
-            return res
-        else:
-            offset += 1
-            return self.get_rate(from_currency, date, offset)
-            
 
 
     def _get_call_str(self, from_currency):
@@ -121,7 +124,7 @@ class DummyRateConverterTo(AbsRateConverterTo):
             raise NotImplementedError('Only FOO or BAR to {} rates are implemented'.format(self.to_currency))
 
 
-    def _dummy_api_call(self, call_str, date):
+    def _rate_api_call(self, call_str, date):
         '''Returns dummy value for all argument values'''
         if self._dates_rates[0] is None:
             return self._dates_rates[1]
@@ -155,8 +158,12 @@ class QuandlUSDRateConverterTo(AbsRateConverterTo):
         else:
             raise NotImplementedError('Only EUR and GBP to USD rates are implemented')
             
-    def get_rate(self, from_currency, date):
-        '''Returns quandl sourced exchange rate. Note that quandl returns dataframes.'''
-        res = quandl.get(self._get_call_str(from_currency), 
-                             start_date=date, end_date=date)
+    # def get_rate(self, from_currency, date):
+    #     '''Returns quandl sourced exchange rate. Note that quandl returns dataframes.'''
+    #     res = quandl.get(self._get_call_str(from_currency), 
+    #                          start_date=date, end_date=date)
+    #     return res.iloc[0]['Value']
+
+    def _rate_api_call(self, call_str, date):
+        res = quandl.get(call_str, start_date=date, end_date=date)
         return res.iloc[0]['Value']

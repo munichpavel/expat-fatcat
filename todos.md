@@ -7,4 +7,6 @@ allow rate smoothing initial window size initialization
 ~~Refactor value error assertion, no return~~
 ~~implement obvious lookup rate expected~~
 ~~restore calculator tests~~
-Add parametrized calculator tests
+~~Add parametrized calculator tests~~ WON'T IMPLEMENT
+
+~~Move dummy converter smoothing rate to abstract converter~~
