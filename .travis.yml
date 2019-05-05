@@ -1,0 +1,15 @@
+language: python
+python:
+  - 3.6
+
+install:
+  - pip install .
+
+# command to run tests
+script:
+  - pytest
+
+# safelist
+branches:
+  only:
+  - refactor-tests

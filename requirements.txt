@@ -1,0 +1,7 @@
+jupyter
+numpy
+pandas
+pytest
+quandl
+xlrd
+-e .

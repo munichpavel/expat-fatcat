@@ -2,6 +2,12 @@
 
 from setuptools import setup, find_packages
 
+requirements=[
+    'pandas',
+    'quandl',
+    'xlrd',
+]
+
 setup(
     name='expat_fatcat',
     version='0.1.0',
@@ -13,7 +19,7 @@ setup(
     packages=find_packages('src'),
     package_dir={'': 'src'},
     include_package_data=True,
-    install_requires=[],
+    install_requires=requirements,
     license="MIT license",
     zip_safe=False,
     keywords='expat_fatcat',
