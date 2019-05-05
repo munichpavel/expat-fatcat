@@ -1,5 +1,6 @@
 """Main module."""
 import os
+import warnings
 import numpy as np
 
 from datetime import datetime, timedelta
@@ -96,11 +97,13 @@ class DummyRateConverterTo(AbsRateConverterTo):
     def get_rate(self, from_currency, date, offset=0):
         '''Returns dummy exchange rate'''
         call_str = self._get_call_str(from_currency)
-        res = np.nanmean([
-            self._dummy_api_call(call_str, date + timedelta(offset)),
-            self._dummy_api_call(call_str, date + timedelta(-offset))
-        ])
-        
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore", category=RuntimeWarning)
+            res = np.nanmean([
+                self._dummy_api_call(call_str, date + timedelta(offset)),
+                self._dummy_api_call(call_str, date + timedelta(-offset))
+            ])
+            
         if not np.isnan(res):
             return res
         else:
