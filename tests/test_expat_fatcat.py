@@ -42,16 +42,16 @@ def nan_test_equals(x,y):
         date_input,error_expectation,lookup_rate_expected,rate_expected',
     [
         (
-            DummyRateConverterTo('USD'), None, 'FOO',  
+            DummyRateConverterTo('USD'), (None, 1.125), 'FOO',  
             datetime(2017, 2, 20), pytest.raises(TypeError), np.nan, 1.125
         ),
         (
             DummyRateConverterTo('USD', rates_asym), rates_asym, 'FOO', 
-            datetime(2017, 2, 20), does_not_raise(), np.nan, 2.2
+            datetime(2017, 2, 20), does_not_raise(), np.nan, expected_asym
         ),
         (
             DummyRateConverterTo('USD', rates_sym), rates_sym, 'FOO', 
-            datetime(2017, 2, 20), does_not_raise(), np.nan, 3.0
+            datetime(2017, 2, 20), does_not_raise(), np.nan, expected_sym
         )
     ]
 )

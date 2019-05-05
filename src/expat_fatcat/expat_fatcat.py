@@ -89,7 +89,7 @@ class AbsRateConverterTo(ABC):
 
 class DummyRateConverterTo(AbsRateConverterTo):
     '''Dummy fx rate converter for testing and development'''
-    def __init__(self, to_currency, dates_rates=None):
+    def __init__(self, to_currency, dates_rates=(None, 1.125)):
         self.to_currency = to_currency
         self._dates_rates = dates_rates
 
@@ -123,8 +123,8 @@ class DummyRateConverterTo(AbsRateConverterTo):
 
     def _dummy_api_call(self, call_str, date):
         '''Returns dummy value for all argument values'''
-        if self._dates_rates is None:
-            return 1.125
+        if self._dates_rates[0] is None:
+            return self._dates_rates[1]
         else:
             return self._lookup_rate(date)
             
