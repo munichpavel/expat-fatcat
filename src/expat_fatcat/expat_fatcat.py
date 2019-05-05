@@ -86,8 +86,17 @@ class AbsRateConverterTo(ABC):
 
 class DummyRateConverterTo(AbsRateConverterTo):
     '''Dummy fx rate converter for testing and development'''
-    def __init__(self, to_currency):
+    def __init__(self, to_currency, dates_rates=None):
         self.to_currency = to_currency
+        self._set_dates_rates(dates_rates)
+        
+        
+    def _set_dates_rates(self, dates_rates):
+        if dates_rates is None:
+            self._dates_rates = [(None, 1.125)]
+        else:
+            self._dates_rates = dates_rates
+
 
     def _get_call_str(self, from_currency):
         if from_currency == 'FOO':
