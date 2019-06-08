@@ -49,13 +49,16 @@ class FatcatCalculator():
         self.rate_converter = rate_converter
         self._check_converter()
         
+
     def _check_converter(self):
         if self.rate_converter.to_currency != 'USD':
             raise ValueError('invalid "to_currency": Fatcat only converts to USD')
         
+
     def _parse_date(self, date_string, date_format='%Y-%m-%d'):
         return datetime.strptime(date_string, date_format)
     
+
     def _get_rate(self, from_currency, date_string, date_format='%Y-%m-%d'):
         date = self._parse_date(date_string, date_format)
         rate = self.rate_converter.get_rate(from_currency, date)
@@ -65,6 +68,7 @@ class FatcatCalculator():
     def _get_converted_amount(self, from_currency, amount, date_string, date_format='%Y-%m-%d'):
         return self._get_rate(from_currency, date_string, date_format) * amount
     
+
     def __call__(self, from_currency, payments):
 
         converted_payments = [
@@ -146,10 +150,12 @@ class QuandlUSDRateConverterTo(AbsRateConverterTo):
         self.to_currency = 'USD'
         self._set_key()
     
+ 
     def _set_key(self):
         if 'QUANDL_KEY' in os.environ:
             quandl.ApiConfig.api_key = os.environ['QUANDL_KEY']    
             
+ 
     def _get_call_str(self, from_currency):
         if from_currency == 'EUR':
             return 'ECB/EURUSD'
@@ -157,18 +163,13 @@ class QuandlUSDRateConverterTo(AbsRateConverterTo):
             return 'FRED/DEXUSUK'
         else:
             raise NotImplementedError('Only EUR and GBP to USD rates are implemented')
-            
-    # def get_rate(self, from_currency, date):
-    #     '''Returns quandl sourced exchange rate. Note that quandl returns dataframes.'''
-    #     res = quandl.get(self._get_call_str(from_currency), 
-    #                          start_date=date, end_date=date)
-    #     return res.iloc[0]['Value']
+    
 
     def _rate_api_call(self, call_str, date):
         r = quandl.get(call_str, start_date=date, end_date=date)
         try:
             res = r.iloc[0]['Value']
-        except IndexError as err:
+        except IndexError:
             print("Invalid date, trying before and after")
             res = np.nan
 
