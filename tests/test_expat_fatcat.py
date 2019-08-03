@@ -1,13 +1,16 @@
 """Tests for `expat_fatcat` package."""
-
+from io import StringIO
 import pytest
 from contextlib import contextmanager
 
 import numpy as np
 from datetime import datetime
 
+import pandas as pd
+
 import expat_fatcat
 from expat_fatcat.expat_fatcat import DummyRateConverterTo
+
 
 
 dates_rates_asym = [

@@ -11,3 +11,6 @@ allow rate smoothing initial window size initialization
 
 ~~Move dummy converter smoothing rate to abstract converter~~
 Add invalid date test
+Fix double printing of invalid message
+write main function
+- write fake payment, rent to temp directory as csv
