@@ -2,6 +2,7 @@
 import os
 import warnings
 import numpy as np
+import pandas as pd
 
 from datetime import datetime, timedelta
 
@@ -91,8 +92,8 @@ class FatcatCalculator():
 
     def __call__(self, from_currency, payments):
 
-        converted_payments = self.convert_payments(from_currency, payments)
-        return sum(converted_payments)
+        res = self.convert_payments(from_currency, payments)
+        return pd.DataFrame(res)['converted_amount'].sum()
     
 
 class AbsRateConverterTo(ABC):
