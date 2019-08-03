@@ -112,6 +112,16 @@ class TestCalculator:
         agg_payment = calculator('FOO', salary)
         assert agg_payment == 2812.5
         
+    def test_convert_payments(self, calculator, salary):
+        res = calculator.convert_payments('FOO', salary)
+        expected = [
+            {'date': '2017-01-20', 'amount': 1000, 'converted_amount': 1125.},
+            {'date': '2017-02-20', 'amount': 1500, 'converted_amount': 1687.5}
+        ]
+        pd.testing.assert_frame_equal(
+            pd.DataFrame(res),
+            pd.DataFrame(expected)
+        )
 
 # ######################################
 # # f2555

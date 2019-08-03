@@ -48,7 +48,27 @@ class FatcatCalculator():
     def __init__(self, rate_converter):
         self.rate_converter = rate_converter
         self._check_converter()
-        
+    
+    def convert_payments(self, from_currency, payments):
+        """
+        Convert payment history from input currency to rate_converter target currency
+        Parameters
+        ----------
+        from_currency : str
+            Currency of payment
+        payments : list of dicts
+
+        Returns
+        -------
+        res : list of dicts
+            Payments with extra field for fx converted amount
+        """
+        res = payments.copy()
+        for payment in res:
+            print(payment)
+            payment['converted_amount'] = self._get_converted_amount(from_currency, payment.get('amount'), payment.get('date'))
+
+        return res
 
     def _check_converter(self):
         if self.rate_converter.to_currency != 'USD':
@@ -71,11 +91,7 @@ class FatcatCalculator():
 
     def __call__(self, from_currency, payments):
 
-        converted_payments = [
-            self._get_converted_amount(from_currency, payment.get('amount'), payment.get('date'))
-            for payment in payments
-        ]
-        
+        converted_payments = self.convert_payments(from_currency, payments)
         return sum(converted_payments)
     
 
