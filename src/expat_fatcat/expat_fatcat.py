@@ -96,6 +96,10 @@ class AbsRateConverterTo(ABC):
             ])
             
         if not np.isnan(res):
+            print(
+                "Rate on {0} from {1} to {2} is: {3}"
+                .format(date, from_currency, self.to_currency, res)
+            )
             return res
         else:
             offset += 1
@@ -170,7 +174,7 @@ class QuandlUSDRateConverterTo(AbsRateConverterTo):
         try:
             res = r.iloc[0]['Value']
         except IndexError:
-            print("Invalid date, trying before and after")
+            print("Date {} is invalid, trying before and after".format(date))
             res = np.nan
 
         return res
