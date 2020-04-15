@@ -11,6 +11,7 @@ jobs:
       - python/load-cache
       - python/install-deps
       - python/save-cache
+      - run: ls
       - run:
           command: .pytest -vv
           name: Test
