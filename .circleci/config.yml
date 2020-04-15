@@ -1,21 +1,14 @@
-version: 2.1
-
-orbs:
-  python: circleci/python@0.2.1
-
+version: 2
 jobs:
-  build-and-test:
-    executor: python/default
+  build:
+    working_directory: ~/circleci-expat-fatcat
+    docker:
+      - image: circleci/python:3.6.4
     steps:
       - checkout
-      - python/load-cache
-      - python/install-deps
-      - python/save-cache
-      - run: ls
-      - run: which python
-      - run: pytest -vv
-
-workflows:
-  main:
-    jobs:
-      - build-and-test
+      - run: 
+          command: |        
+            sudo pip install -r requirements.txt
+      - run:
+          command: |
+            pytest -vv
