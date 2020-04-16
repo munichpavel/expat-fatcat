@@ -1,8 +1,13 @@
+# non-prod
+pylint
 jupyter
+pytest
+
+# install requires
 numpy
 openpyxl
 pandas
-pytest
 quandl
 xlrd
+
 -e .
