@@ -6,6 +6,8 @@ import pandas as pd
 
 from datetime import datetime, timedelta
 
+import logging
+
 from abc import ABC, abstractmethod
 
 import quandl
@@ -49,7 +51,7 @@ class FatcatCalculator():
     def __init__(self, rate_converter):
         self.rate_converter = rate_converter
         self._check_converter()
-    
+
     def convert_payments(self, from_currency, payments):
         """
         Convert payment history from input currency to rate_converter target currency
@@ -66,7 +68,6 @@ class FatcatCalculator():
         """
         res = payments.copy()
         for payment in res:
-            print(payment)
             payment['converted_amount'] = self._get_converted_amount(from_currency, payment.get('amount'), payment.get('date'))
 
         return res
@@ -113,10 +114,6 @@ class AbsRateConverterTo(ABC):
             ])
             
         if not np.isnan(res):
-            print(
-                "Rate on {0} from {1} to {2} is: {3}"
-                .format(date, from_currency, self.to_currency, res)
-            )
             return res
         else:
             offset += 1
@@ -191,7 +188,7 @@ class QuandlUSDRateConverterTo(AbsRateConverterTo):
         try:
             res = r.iloc[0]['Value']
         except IndexError:
-            print("Date {} is invalid, trying before and after".format(date))
+            warnings.warn("Date {} is invalid, trying before and after".format(date))
             res = np.nan
 
         return res
