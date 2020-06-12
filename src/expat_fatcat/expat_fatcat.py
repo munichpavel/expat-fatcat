@@ -40,7 +40,7 @@ def f2555(rate_converter, data):
     for d in data:
          res[d['tag']] = {
             'currency': d['currency'],
-            'amount': calculator(d['currency'], d['payments'])
+            'amount': calculator(d['payments'], d['currency'])
         }
 
     return res
@@ -56,7 +56,7 @@ class FatcatCalculator():
         if self.rate_converter.to_currency != 'USD':
             raise ValueError('invalid "to_currency": Fatcat only converts to USD')
 
-    def convert_payments(self, from_currency, payments, date_format='%Y-%m-%d'):
+    def convert_payments(self, payments, from_currency, date_format='%Y-%m-%d'):
         """
         Convert payment history from input currency to rate_converter target currency
         Parameters
@@ -73,14 +73,14 @@ class FatcatCalculator():
         res = payments.copy()
         for payment in res:
             payment['converted_amount'] = self.get_converted_amount(
-                from_currency, payment.get('amount'), payment.get('date'),
+                payment.get('amount'), from_currency, payment.get('date'),
                 date_format
             )
 
         return res
 
     def get_converted_amount(
-        self, from_currency, amount, 
+        self, amount, from_currency, 
         date_string, date_format='%Y-%m-%d'
     ):
         return self.get_rate(from_currency, date_string, date_format) * amount
@@ -93,9 +93,9 @@ class FatcatCalculator():
     def parse_date(self, date_string, date_format):
         return datetime.strptime(date_string, date_format)   
 
-    def __call__(self, from_currency, payments, date_format='%Y-%m-%d'):
+    def __call__(self, payments, from_currency, date_format='%Y-%m-%d'):
 
-        res = self.convert_payments(from_currency, payments, date_format)
+        res = self.convert_payments(payments, from_currency, date_format)
         return pd.DataFrame(res)['converted_amount'].sum()
     
 

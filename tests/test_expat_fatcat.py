@@ -105,15 +105,15 @@ class TestCalculator:
 
     def test_get_converted_amount(self, calculator):
         amount = 10.
-        assert calculator.get_converted_amount('FOO', amount, '2019-04-18') == 11.25
+        assert calculator.get_converted_amount(amount, 'FOO', '2019-04-18') == 11.25
 
 
     def test_calculate_agg_payment(self, calculator, salary):
-        agg_payment = calculator('FOO', salary)
+        agg_payment = calculator(salary, 'FOO')
         assert agg_payment == 2812.5
         
     def test_convert_payments(self, calculator, salary):
-        res = calculator.convert_payments('FOO', salary)
+        res = calculator.convert_payments(salary, 'FOO')
         expected = [
             {'date': '2017-01-20', 'amount': 1000, 'converted_amount': 1125.},
             {'date': '2017-02-20', 'amount': 1500, 'converted_amount': 1687.5}
