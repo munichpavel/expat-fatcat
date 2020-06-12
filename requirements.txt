@@ -2,6 +2,7 @@
 pylint
 jupyter
 pytest
+bump2
 
 # install requires
 numpy
