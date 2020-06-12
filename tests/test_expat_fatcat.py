@@ -89,10 +89,10 @@ def calculator(rate_converter):
 
 
 class TestCalculator:
-    '''
+    """
     Tests for the main functionality of rate calculators.
     Excludes edge cases such as missing values, invalid arguments, etc.
-    '''    
+    """    
         
     def test_date_conversion(self, calculator):
         assert calculator._parse_date('2019-04-18') == datetime(2019, 4, 18)
@@ -150,7 +150,7 @@ def f2555_data(salary, rent, dividends):
         ]
             
 class TestF2555:
-    '''Tests for form 2555 class F2555'''
+    """Tests for form 2555 class F2555"""
     def test_f2555_call(self, rate_converter, f2555_data):
 
         res = expat_fatcat.f2555(rate_converter, f2555_data)
