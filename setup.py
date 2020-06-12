@@ -10,7 +10,7 @@ requirements=[
 
 setup(
     name='expat_fatcat',
-    version='0.1.0',
+    version='0.1.1',
     description="expat-fatcat helps US taxpayers living abroafile their tax returns",
     long_description='',
     author="Paul Larsen",
