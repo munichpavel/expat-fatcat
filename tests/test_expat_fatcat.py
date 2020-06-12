@@ -95,17 +95,17 @@ class TestCalculator:
     """    
         
     def test_date_conversion(self, calculator):
-        assert calculator._parse_date('2019-04-18') == datetime(2019, 4, 18)
+        assert calculator.parse_date('2019-04-18', '%Y-%m-%d') == datetime(2019, 4, 18)
 
 
     def test_get_rate(self, calculator):
-        rate = calculator._get_rate('FOO', '2019-04-18')
+        rate = calculator.get_rate('FOO', '2019-04-18', '%Y-%m-%d')
         assert rate == 1.125
 
 
     def test_get_converted_amount(self, calculator):
         amount = 10.
-        assert calculator._get_converted_amount('FOO', amount, '2019-04-18') == 11.25
+        assert calculator.get_converted_amount('FOO', amount, '2019-04-18') == 11.25
 
 
     def test_calculate_agg_payment(self, calculator, salary):
