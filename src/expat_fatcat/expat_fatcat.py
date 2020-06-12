@@ -52,6 +52,10 @@ class FatcatCalculator():
         self.rate_converter = rate_converter
         self._check_converter()
 
+    def _check_converter(self):
+        if self.rate_converter.to_currency != 'USD':
+            raise ValueError('invalid "to_currency": Fatcat only converts to USD')
+
     def convert_payments(self, from_currency, payments):
         """
         Convert payment history from input currency to rate_converter target currency
@@ -72,24 +76,16 @@ class FatcatCalculator():
 
         return res
 
-    def _check_converter(self):
-        if self.rate_converter.to_currency != 'USD':
-            raise ValueError('invalid "to_currency": Fatcat only converts to USD')
-        
-
-    def _parse_date(self, date_string, date_format='%Y-%m-%d'):
-        return datetime.strptime(date_string, date_format)
-    
+    def _get_converted_amount(self, from_currency, amount, date_string, date_format='%Y-%m-%d'):
+        return self._get_rate(from_currency, date_string, date_format) * amount
 
     def _get_rate(self, from_currency, date_string, date_format='%Y-%m-%d'):
         date = self._parse_date(date_string, date_format)
         rate = self.rate_converter.get_rate(from_currency, date)
         return rate
-    
-    
-    def _get_converted_amount(self, from_currency, amount, date_string, date_format='%Y-%m-%d'):
-        return self._get_rate(from_currency, date_string, date_format) * amount
-    
+
+    def _parse_date(self, date_string, date_format='%Y-%m-%d'):
+        return datetime.strptime(date_string, date_format)   
 
     def __call__(self, from_currency, payments):
 
