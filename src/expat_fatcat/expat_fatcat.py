@@ -14,7 +14,7 @@ import quandl
 
 
 def f2555(rate_converter, data):
-    '''
+    """
     Calculate total payments in USD
     
     Example usage
@@ -34,7 +34,7 @@ def f2555(rate_converter, data):
     ... ]
     >>> f2555(converter, data)
     {'salary': {'currency': 'FOO', 'amount': 2812.5}, 'dividends': {'currency': 'BAR', 'amount': 67.5}}
-    '''
+    """
     calculator = FatcatCalculator(rate_converter)
     res = {}
     for d in data:
@@ -47,7 +47,7 @@ def f2555(rate_converter, data):
 
 
 class FatcatCalculator():
-    '''Calculate fx rates and other tax related quantities for FATCA compliance'''
+    """Calculate fx rates and other tax related quantities for FATCA compliance"""
     def __init__(self, rate_converter):
         self.rate_converter = rate_converter
         self._check_converter()
@@ -98,13 +98,13 @@ class FatcatCalculator():
     
 
 class AbsRateConverterTo(ABC):
-    '''Abstract class for conversions to a given currency'''
+    """Abstract class for conversions to a given currency"""
     def __init__(self, to_currency):
         self.to_currency = to_currency
     
 
     def get_rate(self, from_currency, date, offset=0):
-        '''Returns exchange rate'''
+        """Returns exchange rate"""
         call_str = self._get_call_str(from_currency)
         with warnings.catch_warnings():
             warnings.simplefilter("ignore", category=RuntimeWarning)
@@ -131,7 +131,7 @@ class AbsRateConverterTo(ABC):
 
 
 class DummyRateConverterTo(AbsRateConverterTo):
-    '''Dummy fx rate converter for testing and development'''
+    """Dummy fx rate converter for testing and development"""
     def __init__(self, to_currency, dates_rates=(None, 1.125)):
         self.to_currency = to_currency
         self._dates_rates = dates_rates
@@ -147,7 +147,7 @@ class DummyRateConverterTo(AbsRateConverterTo):
 
 
     def _rate_api_call(self, call_str, date):
-        '''Returns dummy value for all argument values'''
+        """Returns dummy value for all argument values"""
         if self._dates_rates[0] is None:
             return self._dates_rates[1]
         else:
@@ -163,7 +163,7 @@ class DummyRateConverterTo(AbsRateConverterTo):
 
 
 class QuandlUSDRateConverterTo(AbsRateConverterTo):
-    '''Get conversion rates to USD from the QUANDL python api'''
+    """Get conversion rates to USD from the QUANDL python api"""
     def __init__(self):
         self.to_currency = 'USD'
         self._set_key()
