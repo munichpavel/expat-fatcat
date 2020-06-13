@@ -103,10 +103,9 @@ class AbsRateConverterTo(ABC):
     """Abstract class for conversions to a given currency"""
     def __init__(self, to_currency):
         self.to_currency = to_currency
-    
 
     def get_rate(self, from_currency, date, offset=0):
-        """Returns exchange rate"""
+        """Returns exchange rate, with smoothing if no fx rate for date"""
         call_str = self._get_call_str(from_currency)
         with warnings.catch_warnings():
             warnings.simplefilter("ignore", category=RuntimeWarning)
@@ -130,38 +129,6 @@ class AbsRateConverterTo(ABC):
     @abstractmethod
     def _rate_api_call(self, call_str, date):
         pass
-
-
-class DummyRateConverterTo(AbsRateConverterTo):
-    """Dummy fx rate converter for testing and development"""
-    def __init__(self, to_currency, dates_rates=(None, 1.125)):
-        self.to_currency = to_currency
-        self._dates_rates = dates_rates
-
-
-    def _get_call_str(self, from_currency):
-        if from_currency == 'FOO':
-            return 'ECB/FOO' + self.to_currency
-        elif from_currency == 'BAR':
-            return 'ECB/BAR' + self.to_currency
-        else:
-            raise NotImplementedError('Only FOO or BAR to {} rates are implemented'.format(self.to_currency))
-
-
-    def _rate_api_call(self, call_str, date):
-        """Returns dummy value for all argument values"""
-        if self._dates_rates[0] is None:
-            return self._dates_rates[1]
-        else:
-            return self._lookup_rate(date)
-            
-
-    def _lookup_rate(self, date):
-        for r in self._dates_rates:
-            if r[0] == date:
-                return r[1]
-
-    
 
 
 class QuandlRateConverterToUSD(AbsRateConverterTo):
@@ -194,3 +161,30 @@ class QuandlRateConverterToUSD(AbsRateConverterTo):
             res = np.nan
 
         return res
+
+
+class DummyRateConverterTo(AbsRateConverterTo):
+    """Dummy fx rate converter for testing and development"""
+    def __init__(self, to_currency, dates_fx_rates):
+        self.to_currency = to_currency
+        self._dates_fx_rates = dates_fx_rates
+
+
+    def _get_call_str(self, from_currency):
+        if from_currency == 'FOO':
+            return 'ECB/FOO' + self.to_currency
+        elif from_currency == 'BAR':
+            return 'ECB/BAR' + self.to_currency
+        else:
+            raise NotImplementedError('Only FOO or BAR to {} rates are implemented'.format(self.to_currency))
+
+
+    def _rate_api_call(self, call_str, date):
+        """Returns dummy value for all argument values"""
+        return self._lookup_rate(date)
+            
+
+    def _lookup_rate(self, date):
+        for r in self._dates_fx_rates:
+            if r[0] == date:
+                return r[1]
