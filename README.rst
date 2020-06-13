@@ -1,11 +1,19 @@
 expat-fatcat
 ============
 
-expat-fatcat helps US taxpayers living abroad file their tax returns by giving you automated conversion of payments in a foreign currency into USD using an exchange rate valid on the day of your payment, as required for form f2555.
+`expat-fatcat` helps US taxpayers living abroad file their tax returns to comply with the IRS and [FATCA](https://en.wikipedia.org/wiki/Foreign_Account_Tax_Compliance_Act). A significant pain point in this process is that all foreign payments (income or deductions) must be converted to USD with a valid rate on the date of payment. This can readily add up to 40+ historical FX-rates to look up and then paste into the usual Excel accounting madness. Some people may consider a little copy-paste drudge work once a year a minor annoyance, but what are programming and APIs for if not injecting some fun into an otherwise dreary task?
 
-User story
-----------
+The core functionality of `expat-fatcat` is an historical FX-rate lookup with smoothing in case of a missing exhange rate. Currently, we use the FX-service [Quandl](https://www.quandl.com/) in `QuandlRateCoverterToUSD`, which is a sub-class of `AbsRateConverterTo`. Other FX-rate services could be readily integrated as required.
 
-Alice is an American expat, and to fill out her US taxes each year, she has to convert income payments and relevant expenses (e.g. rent) into US dollars on the day that the payments were made using a valid exchange rate.
+Example Usage
+-------------
 
-For each currency, Alice collects the different payment amounts and dates she needs to convert to USD, e.g. rent and salary in EUR, investment returns in GBP. A planned future stage in ```expat-fatcat``` is to offer it as a webservice, where for each currency, Alice would upload the relevant excel sheets containing payment amounts and dates.
+```python
+>>> from expat_fatcat import QuandlRateConverterToUSD, FatcatCalculator
+>>> converter = QuandlRateConverterToUSD()
+>>> converter.get_rate('EUR', datetime(2019, 4, 18))
+1.125
+>>> payments = [dict(date='2018-01-15', amount=100), dict(date='2018-02-15', amount=150)]
+>>> FatcatCalculator(converter)
+310.165
+```
