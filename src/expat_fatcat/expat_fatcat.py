@@ -164,7 +164,7 @@ class DummyRateConverterTo(AbsRateConverterTo):
     
 
 
-class QuandlUSDRateConverterTo(AbsRateConverterTo):
+class QuandlRateConverterToUSD(AbsRateConverterTo):
     """Get conversion rates to USD from the QUANDL python api"""
     def __init__(self):
         self.to_currency = 'USD'
