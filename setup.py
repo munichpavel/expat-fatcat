@@ -6,9 +6,9 @@ description = """
 ``expat-fatcat`` helps US taxpayers living abroad file their tax returns to
 comply with the IRS and
 FATCA (https://en.wikipedia.org/wiki/Foreign_Account_Tax_Compliance_Act).
-A significant pain point in this process is that all foreign payments (income
-or deductions) must be converted to USD with a valid rate on the date of
-payment. This can readily add up to 40+ historical FX-rates to look up and
+A significant pain point in this process is that foreign payments (income
+or deductions) must sometimes be converted to USD with a valid rate on the date
+of payment. This can readily add up to 40+ historical FX-rates to look up and
 then paste into the usual Excel accounting madness. Some people may consider a
 little copy-paste drudge work once a year a minor annoyance, but what are
 programming and APIs for if not injecting some fun into an otherwise dreary
