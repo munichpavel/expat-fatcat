@@ -22,8 +22,9 @@ integrated as required.
 """
 
 requirements = [
+    'quandl',
     'pandas',
-    'quandl'
+
 ]
 
 setup(
