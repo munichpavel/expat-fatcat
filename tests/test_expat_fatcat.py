@@ -39,11 +39,11 @@ class TestConverter:
 @pytest.fixture
 def rate_converter():
     return DummyRateConverterTo('USD', [
-        (datetime(2019, 4, 18), 1.125),
-        (datetime(2017, 1, 20), 1.125),
-        (datetime(2017, 2, 20), 1.125),
-        (datetime(2017, 1, 1), 1.125),
-        (datetime(2017, 2, 1), 1.125)
+        (datetime(2019, 4, 18), 1.1),
+        (datetime(2017, 1, 20), 1.1),
+        (datetime(2017, 2, 20), 1.1),
+        (datetime(2017, 1, 1), 1.1),
+        (datetime(2017, 2, 1), 1.1)
     ])
 
 
@@ -70,21 +70,21 @@ class TestCalculator:
 
     def test_get_rate(self, calculator):
         rate = calculator.get_rate('FOO', '2019-04-18', '%Y-%m-%d')
-        assert rate == 1.125
+        assert rate == 1.1
 
     def test_get_converted_amount(self, calculator):
         amount = 10.
-        assert calculator.get_converted_amount(amount, 'FOO', '2019-04-18', '%Y-%m-%d') == 11.25
+        assert calculator.get_converted_amount(amount, 'FOO', '2019-04-18', '%Y-%m-%d') == 11.
 
     def test_calculate_agg_payment(self, calculator, salary):
         agg_payment = calculator(salary, 'FOO')
-        assert agg_payment == 2812.5
+        assert agg_payment == 2750.
         
     def test_convert_payments(self, calculator, salary):
         res = calculator.convert_payments(salary, 'FOO')
         expected = [
-            {'date': '2017-01-20', 'amount': 1000, 'converted_amount': 1125.},
-            {'date': '2017-02-20', 'amount': 1500, 'converted_amount': 1687.5}
+            {'date': '2017-01-20', 'amount': 1000, 'converted_amount': 1100.},
+            {'date': '2017-02-20', 'amount': 1500, 'converted_amount': 1650.}
         ]
         pd.testing.assert_frame_equal(
             pd.DataFrame(res),
@@ -122,9 +122,9 @@ class TestF2555:
     def test_f2555_call(self, rate_converter, f2555_data):
 
         res = expat_fatcat.f2555(rate_converter, f2555_data)
-        assert res.get('rent').get('amount') == 1462.5
+        assert res.get('rent').get('amount') == 1430.
         assert res.get('rent').get('currency') == 'FOO'
-        assert res.get('salary').get('amount') == 2812.5
+        assert res.get('salary').get('amount') == 2750.
         assert res.get('salary').get('currency') == 'FOO'
-        assert res.get('dividends').get('amount') == 67.5
+        assert res.get('dividends').get('amount') == 66.0
         assert res.get('dividends').get('currency') == 'FOO'
