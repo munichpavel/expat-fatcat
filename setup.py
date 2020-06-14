@@ -2,7 +2,7 @@
 
 from setuptools import setup, find_packages
 
-requirements=[
+requirements = [
     'pandas',
     'quandl',
     'xlrd',
@@ -11,7 +11,9 @@ requirements=[
 setup(
     name='expat_fatcat',
     version='0.1.0',
-    description="expat-fatcat helps US taxpayers living abroafile their tax returns",
+    description=(
+        "expat-fatcat helps US taxpayers living abroad file their tax returns"
+    ),
     long_description='',
     author="Paul Larsen",
     author_email='munichpavel@gmail.com',

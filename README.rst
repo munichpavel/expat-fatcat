@@ -8,12 +8,13 @@ The core functionality of `expat-fatcat` is an historical FX-rate lookup with sm
 Example Usage
 -------------
 
-```python
->>> from expat_fatcat import QuandlRateConverterToUSD, FatcatCalculator
->>> converter = QuandlRateConverterToUSD()
->>> converter.get_rate('EUR', datetime(2019, 4, 18))
-1.125
->>> payments = [dict(date='2018-01-15', amount=100), dict(date='2018-02-15', amount=150)]
->>> FatcatCalculator(converter)
-310.165
-```
+.. code:: python
+
+    from expat_fatcat import QuandlRateConverterToUSD, FatcatCalculator
+    converter = QuandlRateConverterToUSD()
+    converter.get_rate('EUR', datetime(2019, 4, 18))
+    # 1.125
+    payments = [dict(date='2018-01-15', amount=100), dict(date='2018-02-15', amount=150)]
+    calculator = FatcatCalculator(converter)
+    calculator(payments, 'EUR', '%Y-%m-%d')
+    # 310.165

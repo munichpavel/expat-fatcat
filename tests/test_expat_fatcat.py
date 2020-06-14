@@ -1,8 +1,5 @@
 """Tests for `expat_fatcat` package."""
-from io import StringIO
 import pytest
-from contextlib import contextmanager
-
 import numpy as np
 from datetime import datetime
 
@@ -59,14 +56,18 @@ def salary():
          {'date': '2017-02-20', 'amount': 1500}
     ]
 
+
 class TestCalculator:
     """
     Tests for the main functionality of rate calculators.
     Excludes edge cases such as missing values, invalid arguments, etc.
-    """    
-        
+    """
+
     def test_date_conversion(self, calculator):
-        assert calculator.parse_date('2019-04-18', '%Y-%m-%d') == datetime(2019, 4, 18)
+        assert (
+            calculator.parse_date('2019-04-18', '%Y-%m-%d')
+            == datetime(2019, 4, 18)
+        )
 
     def test_get_rate(self, calculator):
         rate = calculator.get_rate('FOO', '2019-04-18', '%Y-%m-%d')
@@ -74,14 +75,17 @@ class TestCalculator:
 
     def test_get_converted_amount(self, calculator):
         amount = 10.
-        assert calculator.get_converted_amount(amount, 'FOO', '2019-04-18', '%Y-%m-%d') == 11.
+        assert (calculator.get_converted_amount(
+            amount, 'FOO', '2019-04-18', '%Y-%m-%d')
+            == pytest.approx(11.)
+        )
 
     def test_calculate_agg_payment(self, calculator, salary):
-        agg_payment = calculator(salary, 'FOO')
-        assert agg_payment == 2750.
-        
+        agg_payment = calculator(salary, 'FOO', '%Y-%m-%d')
+        assert agg_payment == pytest.approx(2750.)
+
     def test_convert_payments(self, calculator, salary):
-        res = calculator.convert_payments(salary, 'FOO')
+        res = calculator.convert_payments(salary, 'FOO', '%Y-%m-%d')
         expected = [
             {'date': '2017-01-20', 'amount': 1000, 'converted_amount': 1100.},
             {'date': '2017-02-20', 'amount': 1500, 'converted_amount': 1650.}
@@ -95,12 +99,14 @@ class TestCalculator:
 # # # f2555
 # # ######################################
 
+
 @pytest.fixture
 def rent():
     return [
          {'date': '2017-01-20', 'amount': 650},
          {'date': '2017-02-20', 'amount': 650},
      ]
+
 
 @pytest.fixture
 def dividends():
@@ -109,22 +115,24 @@ def dividends():
          {'date': '2017-02-01', 'amount': 50},
     ]
 
+
 @pytest.fixture
 def f2555_data(salary, rent, dividends):
-        return [
-            {'tag': 'rent', 'currency': 'FOO', 'payments': rent},
-             {'tag': 'salary', 'currency': 'FOO', 'payments': salary},
-             {'tag': 'dividends', 'currency': 'FOO', 'payments': dividends},
-        ]
-            
+    return [
+        {'tag': 'rent', 'currency': 'FOO', 'payments': rent},
+        {'tag': 'salary', 'currency': 'FOO', 'payments': salary},
+        {'tag': 'dividends', 'currency': 'FOO', 'payments': dividends},
+    ]
+
+
 class TestF2555:
     """Tests for form 2555 class F2555"""
     def test_f2555_call(self, rate_converter, f2555_data):
 
-        res = expat_fatcat.f2555(rate_converter, f2555_data)
-        assert res.get('rent').get('amount') == 1430.
+        res = expat_fatcat.f2555(rate_converter, f2555_data, '%Y-%m-%d')
+        assert res.get('rent').get('amount') == pytest.approx(1430.)
         assert res.get('rent').get('currency') == 'FOO'
-        assert res.get('salary').get('amount') == 2750.
+        assert res.get('salary').get('amount') == pytest.approx(2750.)
         assert res.get('salary').get('currency') == 'FOO'
-        assert res.get('dividends').get('amount') == 66.0
+        assert res.get('dividends').get('amount') == pytest.approx(66.)
         assert res.get('dividends').get('currency') == 'FOO'
