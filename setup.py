@@ -3,9 +3,9 @@
 from setuptools import setup, find_packages
 
 description = """
-`expat-fatcat` helps US taxpayers living abroad file their tax returns to
+``expat-fatcat`` helps US taxpayers living abroad file their tax returns to
 comply with the IRS and
-[FATCA](https://en.wikipedia.org/wiki/Foreign_Account_Tax_Compliance_Act).
+FATCA (https://en.wikipedia.org/wiki/Foreign_Account_Tax_Compliance_Act).
 A significant pain point in this process is that all foreign payments (income
 or deductions) must be converted to USD with a valid rate on the date of
 payment. This can readily add up to 40+ historical FX-rates to look up and
@@ -14,10 +14,10 @@ little copy-paste drudge work once a year a minor annoyance, but what are
 programming and APIs for if not injecting some fun into an otherwise dreary
 task?
 
-The core functionality of `expat-fatcat` is an historical FX-rate lookup with
+The core functionality of ``expat-fatcat`` is an historical FX-rate lookup with
 smoothing in case of a missing exhange rate. Currently, we use the FX-service
-[Quandl](https://www.quandl.com/) in `QuandlRateCoverterToUSD`, which is a
-sub-class of `AbsRateConverterTo`. Other FX-rate services could be readily
+Quandl (https://www.quandl.com/) in ``QuandlRateCoverterToUSD``, which is a
+sub-class of ``AbsRateConverterTo``. Other FX-rate services could be readily
 integrated as required.
 """
 
