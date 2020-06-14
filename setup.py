@@ -28,7 +28,7 @@ requirements = [
 
 setup(
     name='expat_fatcat',
-    version='0.1.1',
+    version='0.1.2',
     description=(
         "expat-fatcat helps US taxpayers living abroad with FX coversions "
         "for their tax returns."
