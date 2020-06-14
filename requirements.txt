@@ -1,15 +1,17 @@
 # non-prod
 pylint
-jupyter
 pytest
 bump2version
 flake8
+tox
+
+jupyter
+xlrd
+openpyxl
 
 # install requires
 numpy
-openpyxl
 pandas
 quandl
-xlrd
 
 -e .
