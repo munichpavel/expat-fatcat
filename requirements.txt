@@ -2,7 +2,8 @@
 pylint
 jupyter
 pytest
-bump2
+bump2version
+flake8
 
 # install requires
 numpy
