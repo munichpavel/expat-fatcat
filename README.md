@@ -4,6 +4,17 @@
 
 The core functionality of `expat-fatcat` is an historical FX-rate lookup with smoothing in case of a missing exchange rate. Currently, we use the FX-service [Quandl](https://www.quandl.com/) in `QuandlRateCoverterToUSD`, which is a sub-class of ``AbsRateConverterTo``. Other FX-rate services could be readily integrated as required.
 
+```mermaid
+    flowchart LR
+        start(( ))
+        login([user logs in or\n starts console / notebook])
+        enter([user enters foreign\npayments with currency\nand date])
+        aggregate([user requests sums in USD for manual entry])
+        output([user requests file output\nof conversions\nas supporting material])
+        start --> login --> enter --> aggregate
+        enter --> output
+```
+
 ## Installation
 
 Install from [PyPI](https://pypi.org/) with `pip install expat-fatcat`.
